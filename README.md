@@ -1,4 +1,4 @@
-# persch-practice1
+# P1 Starter Kit
 
 A Next.js site built on Pantheon's Content Publisher — a Puck-based visual page editor with
 server-side datasource resolution, so authors build dynamic pages without writing code.
