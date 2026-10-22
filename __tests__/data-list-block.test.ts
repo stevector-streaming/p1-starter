@@ -4,11 +4,11 @@ const fieldsOf = (block: { fields: Record<string, unknown> }) =>
   block.fields as Record<string, { type?: string }>;
 
 describe("dataListBlock", () => {
-  it("has label 'List'", async () => {
+  it("has label 'Data List'", async () => {
     const { dataListBlock } = await import(
       "../components/puck/data-list-block"
     );
-    expect(dataListBlock.label).toBe("List");
+    expect(dataListBlock.label).toBe("Data List");
   });
 
   it("has a custom datasourceId field", async () => {

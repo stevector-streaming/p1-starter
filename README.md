@@ -1,4 +1,4 @@
-# P1 Starter Kit
+# my-p1-app
 
 A Next.js site built on Pantheon's Content Publisher — a Puck-based visual page editor with
 server-side datasource resolution, so authors build dynamic pages without writing code.
@@ -86,32 +86,31 @@ you do not want.
 npx shadcn@latest add @p1/pricing
 ```
 
-The files land in `components/puck/blocks/pricing/`. Registering the block takes three lines in
-`components/puck/blocks/index.ts`, which `puck.config.tsx` already spreads:
+The files land in `components/puck/blocks/pricing/`. Then register it:
 
-```ts
-import { PricingBlock } from "./pricing/pricing.block";
-
-Pricing: PricingBlock,  // add to p1Blocks
-
-// in p1Categories — create the entry if it does not exist yet:
-convert: { title: "Convert", components: ["Pricing"] },
-// or, if convert already exists, add to its components array (no duplicate key):
-// convert: { title: "Convert", components: ["Pricing", "CtaBanner"] },
+```bash
+npm run blocks:sync    # or: yarn blocks:sync, pnpm blocks:sync
 ```
 
-The install prints the `import` and `p1Blocks` lines for you. Add the block to an existing
-`p1Categories` entry, or create one — but never create a second key for a category that
-already exists. Repeat for each block you want.
+`blocks:sync` reads every block under `components/puck/blocks/`, without running it, and rewrites the section of
+`components/puck/blocks/index.ts` between the `<p1-blocks:begin>` and `<p1-blocks:end>` markers.
+Anything you write outside the markers is left alone, a second run changes nothing, and
+`puck.config.tsx` already spreads the result. Your own blocks still go straight into
+`puck.config.tsx`.
 
-Two things worth knowing:
+A few things worth knowing:
 
-- The category line is what groups a block in the editor drawer. A block registered in `p1Blocks`
-  alone still works but is listed under "Other".
-- A block's export name is at the top of `components/puck/blocks/<name>/<name>.block.tsx` and does
-  not always match the directory — `@p1/logos` exports `LogoCloudBlock`.
+- Blocks are grouped in the editor drawer by the categories they declare. A block with none is
+  listed under "Other".
+- It stops with a message naming the file and line, instead of leaving a block out, when a block
+  cannot be read, has no block export, or registers under the same name as another. A block's
+  `meta.categories` has to be a literal array of strings.
+- `blocks:sync --check` fails if `index.ts` is out of date, which suits a CI step.
+  `--dry-run` shows what would change without writing.
+- To keep an installed block out of the editor, list its directory in `package.json`:
+  `"p1": { "blocks": { "exclude": ["pricing"] } }`.
 
-Blocks you never register cost nothing. To see what we changed in a block you have already edited,
+To see what we changed in a block you have already edited,
 without overwriting your work:
 
 ```bash
